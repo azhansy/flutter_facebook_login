@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
+
 import 'src/clock.dart';
 
 /// FacebookLogin is a plugin for authenticating your users using the native
@@ -104,11 +104,10 @@ class FacebookLogin {
   Future<FacebookLoginResult> logIn(
     List<String> permissions,
   ) async {
-    final Map<dynamic, dynamic> result =
-        await (channel.invokeMethod('logIn', {
+    final Map<dynamic, dynamic> result = (await channel.invokeMethod('logIn', {
       'behavior': _currentLoginBehaviorAsString(),
       'permissions': permissions,
-    }) as FutureOr<Map<dynamic, dynamic>>);
+    }))!;
 
     return _deliverResult(
         FacebookLoginResult._(result.cast<String, dynamic>()));
@@ -326,11 +325,8 @@ class FacebookAccessToken {
           token == other.token &&
           userId == other.userId &&
           expires == other.expires &&
-          const IterableEquality().equals(permissions, other.permissions) &&
-          const IterableEquality().equals(
-            declinedPermissions,
-            other.declinedPermissions,
-          );
+          (permissions == other.permissions &&
+              (declinedPermissions == other.declinedPermissions));
 
   @override
   int get hashCode =>
